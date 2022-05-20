@@ -78,6 +78,7 @@ div#tooltip {
     border-width: 2px;
     visibility: hidden;
     position: absolute;
+    max-width: 50vw;
 }
 
 /* Add a black background color to the top navigation */
