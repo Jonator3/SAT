@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Create new Annotation-Task</h1>
+        <div class="button"><a href="index.html">Return</a></div>
+    </div>
+    <div>
+        <h2>Input File</h2>
+
+        <label>Dataset: (.csv/.tsv)</label><input type="text" id="file" onchange="set_file()"><label class="warning" id="fnf"></label><br>
+        <label>First Line is Head:</label><input type="checkbox" checked id="flh"><br>
+        <label>File Type:</label><select id="ftype">
+            <option value="csv">CSV</option>
+            <option value="tsv">TSV</option>
+        </select>
+    </div>
+    <div>
+        <h2>Annotation</h2>
+
+        <label>shown Data:</label><input type="number" value="0" min="0" id="shown"><br>
+        <input type="radio" name="ano_app" checked><label>Append Annotation</label>
+        <input type="radio" name="ano_app" id="ano_app" onchange="check_ano_target()"><label>Enter Annotation at:</label><input type="number" value="0" min="0" disabled id="ano_target">
+        <div id="ano_class_container"></div>
+
+        <button onclick="add_ano_class()">ADD Annotation-Class</button>
+    </div>
+    <div>
+        <button id="btn" onclick="create_task()" disabled>Load File</button>
+    </div>
+</body>
+<script>
+    var next_ano_class_num = 0;
+    var hkey = -1;
+    function add_ano_class(){
+        var container = document.getElementById("ano_class_container");
+        container.innerHTML += "<div class='ano_class' id='acc_"+next_ano_class_num+"' style='border-color: white;border-style: dotted;border-radius: 3%'>" +
+            "<h3>Annotation-Class "+next_ano_class_num+" " +
+            "<button onclick='del_ano_class("+next_ano_class_num+")' style='color: red'>X</button></h3>" +
+            "<label>Class Name: </label><input type='text' id='acn_"+next_ano_class_num+"' value='"+next_ano_class_num+"'><br>" +
+            "<label>Hotkey: </label><label style='background-color: #333; padding: 1px' id='ack_"+next_ano_class_num+"' onclick='hkey = "+next_ano_class_num+"'>None</label><br>" +
+            "<label>Annotation Hint: </label><br><textarea id='ach_"+next_ano_class_num+"'>Enter Hint here</textarea></div>";
+        next_ano_class_num += 1;
+    }
+
+    function del_ano_class(id){
+        document.getElementById("acc_"+id).outerHTML = "";
+    }
+
+    function check_ano_target(){
+        var check = document.getElementById("ano_app").value;
+        if (check){
+            document.getElementById("ano_target").disabled = false;
+        }
+        else {
+            document.getElementById("ano_target").disabled = true;
+        }
+    }
+
+    function create_task(){
+        var file = document.getElementById("file").value;
+        var has_head = document.getElementById("flh").value;
+        var mode = document.getElementById("ftype").value;
+        var ano_target = -1;
+        console.log(document.getElementById("ano_app").checked);
+
+        if (document.getElementById("ano_app").checked){
+            ano_target = document.getElementById("ano_target").value;
+        }
+        var shown_data = document.getElementById("shown").value;
+        var container = document.getElementsByClassName("ano_class");
+        var classes = new Array(container.length);
+        var hints = new Array(container.length);
+        var hkeys = new Array(container.length);
+        for (let i=0;i<container.length;i++){
+            var con = container[i];
+            var num = con.id.slice(4);
+            classes[i] = document.getElementById("acn_"+num).value;
+            hints[i] = document.getElementById("ach_"+num).value;
+            hkeys[i] = document.getElementById("ack_"+num).innerText;
+        }
+        eel.create_task(file, shown_data, classes, ano_target, mode, has_head, hkeys, hints)
+    }
+
+    function set_file(){
+        var file = document.getElementById("file").value;
+        if (!file.includes("/")){
+            console.log("hallo")
+            file = "~/Downloads/" + file;
+            document.getElementById("file").value = file;
+        }
+        if (file.endsWith(".csv")){
+            document.getElementById("ftype").value = "csv";
+        }else if (file.endsWith(".tsv")){
+            document.getElementById("ftype").value = "tsv";
+        }
+        eel.request_file_info(file);
+    }
+
+    eel.expose(set_fnf, "set_fnf")
+    function set_fnf(text){
+        document.getElementById("fnf").innerText = text;
+        if (text == ""){
+            document.getElementById("btn").disabled = false;
+        }else {
+            document.getElementById("btn").disabled = true;
+        }
+    }
+
+    window.addEventListener('keydown', function(event) {
+        if (hkey < 0){
+            return;
+        }
+        if (event.code == "Escape"){
+            document.getElementById("ack_" + hkey.toString()).innerText = "None";
+        }else if (!(event.code.startsWith("Key") | event.code.startsWith("Numpad"))) {
+            console.log("Key: "+ event.key + " is invalid!")
+        }else {
+            document.getElementById("ack_" + hkey.toString()).innerText = event.code;
+            hkey = -1;
+        }
+    }, false);
+</script>
+<script src="js/main.js"></script>
+</html>

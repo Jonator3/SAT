@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Export Annotation-Task</h1>
+        <div class="button"><a href="annotate.html">Return</a></div>
+    </div>
+    <div>
+        <label>Save File as: </label><input type="text" id="path" value="MyAnnotatedData.csv" onchange="check_target()"><br>
+        <label>File Type:</label><select id="ftype">
+            <option value="csv">CSV</option>
+            <option value="tsv">TSV</option>
+        </select><br>
+        <button id="btn" onclick="save()">Save</button>
+    </div>
+</body>
+<script>
+
+    function check_target(){
+        var file = document.getElementById("path").value;
+        if (!file.includes("/")){
+            console.log("hallo")
+            file = "~/Downloads/" + file;
+            document.getElementById("path").value = file;
+        }
+        if (file.endsWith(".csv")){
+            document.getElementById("ftype").value = "csv";
+        }else if (file.endsWith(".tsv")){
+            document.getElementById("ftype").value = "tsv";
+        }
+        document.getElementById("btn").disabled = (file=="");
+    }
+
+    function save(){
+        var path = document.getElementById("path").value;
+        var mode = document.getElementById("ftype").value;
+        eel.export_task(path, mode);
+    }
+</script>
+<script src="js/main.js"></script>
+</html>

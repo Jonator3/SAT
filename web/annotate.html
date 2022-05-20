@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div id="tooltip"></div>
+    <div>
+        <h1>Simple Annotation Tool</h1>
+        <div class="button"><a href="index.html">Return</a></div>
+    </div>
+    <div style="min-height: 240px;">
+        <h2>Annotation Text:</h2>
+        <p id="text"></p>
+    </div>
+    <div id="btn_panel"></div>
+    <div>
+        <div class="button"> <a href="save.html">Save Annotation-Task</a></div>
+        <div class="button"> <a href="export.html">Export Annotation-Task</a></div>
+    </div>
+
+</body>
+<script>
+
+    var hkeys = new Array(0);
+    var hints = new Array(0);
+
+    eel.expose(set_text, "set_text");
+    function set_text(text) {
+        document.getElementById("text").innerHTML = text.replace("\n", "<br>").replace("\\n", "<br>");
+    }
+
+    var tooltip = document.getElementById("tooltip");
+    var timer;
+    var current_hint = 0
+    document.getElementById("btn_panel").addEventListener("mousemove", function (event) {
+        show_hint(event, current_hint);
+    });
+
+    eel.expose(set_ano_classes, "set_ano_classes");
+    function set_ano_classes(classes){
+        var panel = document.getElementById("btn_panel")
+        for (let i=0;i<classes.length;i++) {
+            panel.innerHTML += "<button style='margin-left: 5%;font-size: 120%' onmouseenter='clearTimeout(timer);\n" +
+                " current_hint = "+i+";\n" +
+                " timer = setTimeout(function () {tooltip.style.visibility = \"visible\";}, 3000);' onmouseleave='\n" +
+                " clearTimeout(timer);\n" +
+                " tooltip.style.visibility = \"hidden\";' id='ano_" + i + "' onclick='eel.annotate(" + i + ")'>" + classes[i] + "</button>"
+        }
+    }
+
+    eel.expose(set_hkeys, "set_hkeys")
+    function set_hkeys(new_keys){
+        hkeys = new_keys;
+    }
+
+    eel.expose(set_hints, "set_hints")
+    function set_hints(new_hints){
+        hints = new_hints;
+    }
+
+    function show_hint(event, num){
+        var h = hints[num];
+        var tooltip = document.getElementById("tooltip");
+        tooltip.innerText = h;
+
+
+        tooltip.style.top = (event.pageY - tooltip.offsetHeight - 5) + "px";
+
+        if (event.pageX > window.innerWidth/2){
+            tooltip.style.left = (event.pageX - tooltip.offsetWidth - 5) + "px";
+        }else {
+            tooltip.style.left = (event.pageX + 5) + "px";
+        }
+
+    }
+
+    window.addEventListener('keyup', function(event) {
+        var code = event.code;
+        console.log(code);
+        for (let i=0; i< hkeys.length; i++){
+            if (hkeys[i] == code){
+                eel.annotate(i);
+                return;
+            }
+        }
+    }, false);
+
+    eel.request_hkeys();
+    eel.request_hints();
+    eel.request_ano_text();
+    eel.request_ano_classes();
+</script>
+<script src="js/main.js"></script>
+</html>

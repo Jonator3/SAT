@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Save Annotation-Task</h1>
+        <div class="button"><a href="annotate.html">Return</a></div>
+    </div>
+    <div>
+        <label>Save File as: </label><input type="text" id="path" value="MyAnnotation-Task.sat" onchange="check_target()"><br>
+        <button id="btn" onclick="save()">Save</button>
+    </div>
+</body>
+<script>
+    function check_target(){
+        var file = document.getElementById("path").value;
+        if (!file.includes("/")){
+            console.log("hallo")
+            file = "~/Downloads/" + file;
+            document.getElementById("path").value = file;
+        }
+        document.getElementById("btn").disabled = (file=="");
+    }
+
+    function save(){
+        var path = document.getElementById("path").value;
+        eel.save_task(path);
+    }
+</script>
+<script src="js/main.js"></script>
+</html>

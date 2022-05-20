@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Simple Annotation Tool</h1>
+    </div>
+    <div>
+        <div class="button"><a href="load.html">load Annotation-Task</a></div>
+        <div class="button"><a href="create.html">create Annotation-Task</a></div>
+    </div>
+</body>
+<script>
+
+    eel.expose(set_sys_info, "set_sys_info")
+    function set_sys_info(os_type, os_version, os_release, cpu_name, cpu_type, cpu_architecture, cpu_count, cpu_threads, memory_total, memory_swap) {
+        document.getElementById("os_type").innerHTML = os_type;
+        document.getElementById("os_version").innerHTML = os_version;
+        //document.getElementById("os_release").innerHTML = os_release;
+        document.getElementById("cpu_name").innerHTML = cpu_name;
+        document.getElementById("cpu_type").innerHTML = cpu_type;
+        //document.getElementById("cpu_architecture").innerHTML = cpu_architecture;
+        document.getElementById("cpu_count").innerHTML = cpu_count;
+        document.getElementById("cpu_threads").innerHTML = cpu_threads;
+        var unit = 0;
+        var temp = memory_total;
+        while (temp > 2048) {
+            temp = temp/1024;
+            unit ++;
+        }
+        document.getElementById("memory_total").innerHTML = Math.round(temp*10)/10 + " " + get_unit_name(unit);
+        unit = 0;
+        temp = memory_swap;
+        while (temp > 2048) {
+            temp = temp/1024;
+            unit ++;
+        }
+        document.getElementById("memory_swap").innerHTML = Math.round(temp*10)/10 + " " + get_unit_name(unit);
+    }
+</script>
+<script src="js/main.js"></script>
+</html>

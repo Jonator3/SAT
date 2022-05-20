@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Annotation Tool</title>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Load Annotation-Task</h1>
+        <div class="button"><a href="index.html">Return</a></div>
+    </div>
+    <div>
+        <h2>Input File</h2>
+
+        <label>Filepath: </label><input type="text" id="file" onchange="set_file()"><label class="warning" id="fnf"></label><br>
+        <button id="btn" disabled onclick="load()">Load</button>
+    </div>
+</body>
+<script>
+    function set_file(){
+        var file = document.getElementById("file").value;
+        if (!file.includes("/")){
+            console.log("hallo")
+            file = "~/Downloads/" + file;
+            document.getElementById("file").value = file;
+        }
+        eel.request_file_info(file);
+    }
+
+    eel.expose(set_fnf, "set_fnf")
+    function set_fnf(text){
+        document.getElementById("fnf").innerText = text;
+        if (text == ""){
+            document.getElementById("btn").disabled = false;
+        }else {
+            document.getElementById("btn").disabled = true;
+        }
+    }
+
+    function load(){
+        var file = document.getElementById("file").value;
+        eel.load_task(file);
+    }
+</script>
+<script src="js/main.js"></script>
+</html>
