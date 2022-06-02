@@ -87,6 +87,8 @@ class AnnotationTask(object):
         self.annotated.append(ano)
 
     def get_next_text(self):
+        if len(self.un_annotated) <= 0:
+            return "Your Annotation-Task is done!<br>You can now export your complete Dataset."
         return self.un_annotated[0][self.shown_data].replace("\n", "<br>").replace("\\n", "<br>")
 
 
