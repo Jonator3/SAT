@@ -1,6 +1,12 @@
 
+eel.expose(play_sound, "play_sound")
+function play_sound(url) {
+  var audio = new Audio(url);
+  audio.play();
+  delete audio;
+}
 
-eel.expose(prompt_alerts);
+eel.expose(prompt_alerts, "prompt_alerts");
 function prompt_alerts(description) {
     alert(description);
 }

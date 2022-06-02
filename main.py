@@ -88,7 +88,7 @@ class AnnotationTask(object):
 
     def get_next_text(self):
         if len(self.un_annotated) <= 0:
-            return "Your Annotation-Task is done!<br>You can now export your complete Dataset."
+            return None
         return self.un_annotated[0][self.shown_data].replace("\n", "<br>").replace("\\n", "<br>")
 
 
@@ -130,6 +130,7 @@ def save_task(file):
     global current_task
     current_task.save_state(file)
     eel.redirect("annotate.html")
+    eel.play_sound("audio/bing.mp3")
 
 
 @eel.expose
@@ -139,6 +140,7 @@ def export_task(file, mode="csv"):
     global current_task
     current_task.write_file(file, mode)
     eel.redirect("annotate.html")
+    eel.play_sound("audio/bing.mp3")
 
 
 @eel.expose
@@ -146,7 +148,7 @@ def annotate(ano_index):
     print("Annotate:", ano_index)
     global current_task
     current_task.annotate(ano_index)
-    eel.set_text(current_task.get_next_text())
+    request_ano_text()
 
 
 @eel.expose
@@ -164,7 +166,11 @@ def request_hints():
 @eel.expose
 def request_ano_text():
     global current_task
-    eel.set_text(current_task.get_next_text())
+    text = current_task.get_next_text()
+    if text is None:
+        text = "Your Annotation-Task is done!<br>You can now export your complete Dataset."
+        eel.play_sound("audio/bing.mp3")
+    eel.set_text(text)
 
 
 @eel.expose
