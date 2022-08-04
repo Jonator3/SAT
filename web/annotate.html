@@ -16,13 +16,16 @@
         <a href="index.html" class="button"><div class="button">Return</div></a>
     </div>
     <div style="min-height: 240px;">
-        <h2>Annotation Text:</h2>
+        <div style="display: flex; justify-content: space-between;">
+            <h2 style="display: inline-block">Annotation Text:</h2>
+            <label style="text-align: right; width: max-content; display: inline" id="progress">?/?</label>
+        </div>
         <p id="text"></p>
     </div>
     <div id="btn_panel"></div>
     <div>
-        <div class="button"> <a href="save.html">Save Annotation-Task</a></div>
-        <div class="button"> <a href="export.html">Export Annotation-Task</a></div>
+        <a href="save.html" class="button"><div class="button">Save Annotation-Task</div></a>
+        <a href="export.html" class="button"><div class="button">Export Annotation-Task</div></a>
     </div>
 
 </body>
@@ -58,6 +61,12 @@
     eel.expose(set_hkeys, "set_hkeys")
     function set_hkeys(new_keys){
         hkeys = new_keys;
+    }
+
+
+    eel.expose(set_progress, "set_progress")
+    function set_progress(index, len){
+        document.getElementById("progress").innerText = index + "/" + len;
     }
 
     eel.expose(set_hints, "set_hints")
@@ -96,6 +105,7 @@
     eel.request_hints();
     eel.request_ano_text();
     eel.request_ano_classes();
+    eel.request_progress();
 </script>
 <script src="js/main.js"></script>
 </html>

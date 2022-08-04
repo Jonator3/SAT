@@ -91,6 +91,9 @@ class AnnotationTask(object):
             return None
         return self.un_annotated[0][self.shown_data].replace("\n", "<br>").replace("\\n", "<br>")
 
+    def get_progress(self):
+        return len(self.annotated), len(self.annotated) + len(self.un_annotated)
+
 
 current_task: AnnotationTask = None
 
@@ -149,12 +152,19 @@ def annotate(ano_index):
     global current_task
     current_task.annotate(ano_index)
     request_ano_text()
+    request_progress()
 
 
 @eel.expose
 def request_hkeys():
     global current_task
     eel.set_hkeys(current_task.hotkeys)
+
+
+@eel.expose
+def request_progress():
+    global current_task
+    eel.set_progress(*current_task.get_progress())
 
 
 @eel.expose
